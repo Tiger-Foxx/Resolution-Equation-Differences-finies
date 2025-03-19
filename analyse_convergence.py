@@ -7,9 +7,6 @@ import csv
 from main import resoudre_equation_diff
 
 
-# Import de la fonction de résolution
-
-
 def solution_exacte_sin(x):
     """Solution exacte u(x) = sin(πx)"""
     return np.sin(np.pi * x)
@@ -18,6 +15,9 @@ def solution_exacte_sin(x):
 def solution_exacte_cube(x):
     """Solution exacte u(x) = x³"""
     return x ** 3
+def solution_exacte_log(x):
+    """Solution exacte u(x) = log(x+1)"""
+    return np.log(x+1)
 
 
 def terme_source_sin(x):
@@ -28,7 +28,9 @@ def terme_source_sin(x):
 def terme_source_cube(x):
     """Terme source f(x) pour u(x) = x³ dans -u''(x) = f(x)"""
     return 6 * x
-
+def terme_source_log(x):
+    """Terme source f(x) pour u(x) = log(x+1) dans -u''(x) = f(x)"""
+    return -1/(1+x)**2
 
 def erreur_Linfini(u_numerique, u_exacte, x):
     """Calcule l'erreur en norme L∞ entre la solution numérique et la solution exacte"""
@@ -40,13 +42,11 @@ def calculer_ordre_convergence(N_values, erreurs):
     log_N = np.log(np.array(N_values))
     log_erreurs = np.log(np.array(erreurs))
 
-    # Calculer les ordres de convergence pour chaque paire consécutive de maillages
     ordres = []
     for i in range(1, len(N_values)):
         ordre = -(log_erreurs[i] - log_erreurs[i - 1]) / (log_N[i] - log_N[i - 1])
         ordres.append(ordre)
 
-    # Calculer l'ordre moyen
     ordre_moyen = np.mean(ordres)
 
     return ordres, ordre_moyen
@@ -57,14 +57,12 @@ def analyser_convergence(solution_exacte, terme_source, u0, u1, N_values, nom_ca
     erreurs = []
 
     for N in N_values:
-        # Résolution numérique
+
         u_numerique, x = resoudre_equation_diff(terme_source, N, u0, u1, tracer_graphe=False)
 
-        # Calculer l'erreur
         erreur = erreur_Linfini(u_numerique, solution_exacte, x)
         erreurs.append(erreur)
 
-        # Tracer et sauvegarder la comparaison pour ce N
         x_exact = np.linspace(0, 1, 1000)
         u_exact = solution_exacte(x_exact)
 
@@ -78,15 +76,12 @@ def analyser_convergence(solution_exacte, terme_source, u0, u1, N_values, nom_ca
         plt.legend()
         plt.tight_layout()
 
-        # Sauvegarder la figure
         fichier_figure = os.path.join(dossier_figures, f"{nom_cas.replace('(', '').replace(')', '')}_N{N}.png")
         plt.savefig(fichier_figure, dpi=300)
         plt.close()
 
-    # Calculer l'ordre de convergence
     ordres, ordre_moyen = calculer_ordre_convergence(N_values, erreurs)
 
-    # Tracer et sauvegarder le graphique de convergence
     plt.figure(figsize=(10, 6))
     plt.loglog(N_values, erreurs, 'bo-', linewidth=2)
     plt.loglog(N_values, [erreurs[0] * (N_values[0] / N) ** 2 for N in N_values], 'r--',
@@ -98,7 +93,6 @@ def analyser_convergence(solution_exacte, terme_source, u0, u1, N_values, nom_ca
     plt.legend()
     plt.tight_layout()
 
-    # Sauvegarder la figure de convergence
     fichier_figure = os.path.join(dossier_figures, f"{nom_cas.replace('(', '').replace(')', '')}_convergence.png")
     plt.savefig(fichier_figure, dpi=300)
     plt.close()
@@ -107,12 +101,10 @@ def analyser_convergence(solution_exacte, terme_source, u0, u1, N_values, nom_ca
 
 
 def main():
-    # Créer un dossier pour les figures avec horodatage
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     dossier_figures = f"figures_{timestamp}"
     os.makedirs(dossier_figures, exist_ok=True)
 
-    # Tailles de maillage à tester
     N_values = [10, 20, 40, 80, 160, 320]
 
     # Cas test 1: u(x) = sin(πx)
@@ -178,28 +170,28 @@ def main():
     # Sauvegarder les résultats dans un fichier texte formaté avec encodage UTF-8
     fichier_txt = f"resultats_convergence_{timestamp}.txt"
     with open(fichier_txt, 'w', encoding='utf-8') as f:
-        f.write("=" * 80 + "\n")
+        f.write("=" * 120 + "\n")
         f.write("ANALYSE DE CONVERGENCE - MÉTHODE DES DIFFÉRENCES FINIES\n")
-        f.write("=" * 80 + "\n\n")
+        f.write("=" * 120 + "\n\n")
 
         f.write("Cas 1: u(x) = sin(πx)\n")
-        f.write("-" * 60 + "\n")
+        f.write("-" * 100 + "\n")
         f.write(f"{'N':<8} {'Erreur L-infini':<20} {'Ordre de conv.':<15}\n")
-        f.write("-" * 60 + "\n")
+        f.write("-" * 100 + "\n")
         for i, N in enumerate(N_values):
             ordre_str = f"{ordres_sin[i - 1]:.4f}" if i > 0 else "N/A"
             f.write(f"{N:<8} {erreurs_sin[i]:<20.10e} {ordre_str:<15}\n")
-        f.write("-" * 60 + "\n")
+        f.write("-" * 100 + "\n")
         f.write(f"Ordre moyen de convergence: {ordre_moyen_sin:.4f}\n\n")
 
         f.write("Cas 2: u(x) = x³\n")
-        f.write("-" * 60 + "\n")
+        f.write("-" * 100 + "\n")
         f.write(f"{'N':<8} {'Erreur L-infini':<20} {'Ordre de conv.':<15}\n")
-        f.write("-" * 60 + "\n")
+        f.write("-" * 100 + "\n")
         for i, N in enumerate(N_values):
             ordre_str = f"{ordres_cube[i - 1]:.4f}" if i > 0 else "N/A"
             f.write(f"{N:<8} {erreurs_cube[i]:<20.10e} {ordre_str:<15}\n")
-        f.write("-" * 60 + "\n")
+        f.write("-" * 100 + "\n")
         f.write(f"Ordre moyen de convergence: {ordre_moyen_cube:.4f}\n")
 
         f.write("\n\nAnalyse sauvegardée le: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))

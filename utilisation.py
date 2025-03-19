@@ -14,7 +14,7 @@ def main():
     U1 = 0  # sin(π) = 0
 
     # Résolution avec N = 40 points
-    N = 100
+    N = 10
     U_solution, x = resoudre_equation_diff(f1, N, U0, U1, tracer_graphe=True)
 
     # Comparaison avec la solution exacte
@@ -34,7 +34,7 @@ def main():
     # Exemple 2: Solution analytique u(x) = x³
     # Pour cette solution, f(x) = 6x
     def f2(x):
-        return 6 * x
+        return -1/(1+x)**2
 
     # Conditions aux limites pour x³
     U0 = 0  # 0³ = 0
@@ -44,7 +44,7 @@ def main():
     U_solution, x = resoudre_equation_diff(f2, N, U0, U1, tracer_graphe=True)
 
     # Comparaison avec la solution exacte
-    u_exact = x_exact ** 3
+    u_exact = np.log(x_exact+1)
 
     plt.figure(figsize=(10, 6))
     plt.plot(x, U_solution, 'bo-', label='Solution numérique')

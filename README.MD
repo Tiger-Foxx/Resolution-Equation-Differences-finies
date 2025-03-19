@@ -18,9 +18,9 @@ sur l'intervalle [0,1].
 
 ## Contenu du repository
 
-- `resolution_edo.py` : Module principal contenant la fonction de résolution
-- `tests.py` : Fichier contenant les tests de validation et d'analyse de convergence
-- `rapport.pdf` : Rapport d'analyse des résultats et de la convergence
+- `analyse_convergence.py` : Module qui permet de lancer l'analse de la convergence des solutions il va generer plusieurs fichiers
+- `main.py` : module qui contient la fonction de resulution de l'equadiff
+- `utilisation.py` : utilisez ce fichier pour tester la fonction de resoltion de l'equadiff , peut etre pour faire une demo au professeur 
 
 ## Méthode utilisée
 
@@ -40,7 +40,12 @@ Le code permet d'étudier la vitesse numérique de convergence en calculant l'er
 
 ## Utilisation
 
-Pour utiliser ce code, importez le module `resolution_edo.py` et appelez la fonction `resoudre_equation_diff` avec les paramètres appropriés.
+```aiignore
+python3 utilisation.py
+python main.py
+ou
+python analyse_convergence.py
+```
 
 ### Prérequis
 

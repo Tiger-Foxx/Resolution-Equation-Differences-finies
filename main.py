@@ -30,14 +30,12 @@ def resoudre_equation_diff(f, N, U0, U1, tracer_graphe=False):
     if N <= 1:
         raise ValueError("N doit être supérieur à 1")
 
-    h = 1 / N  # Pas de discrétisation
-    x_interieur = np.linspace(0, 1, N + 1)[1:-1]  # Points intérieurs (de x1 à x_{N-1})
+    h = 1 / N  #pas
+    x_interieur = np.linspace(0, 1, N + 1)[1:-1]  #(de x1 à x_{N-1})
 
-    # Création et remplissage de la matrice et du second membre
     A = np.zeros((N - 1, N - 1))
     b = np.zeros(N - 1)
 
-    # Remplissage de la matrice et du second membre
     for i in range(N - 1):
         if i == 0:
             A[i, i] = 2
@@ -53,20 +51,17 @@ def resoudre_equation_diff(f, N, U0, U1, tracer_graphe=False):
             A[i, i + 1] = -1
             b[i] = h ** 2 * f(x_interieur[i])
 
-    # Résolution du système linéaire
     try:
         U_interieur = np.linalg.solve(A, b)
     except np.linalg.LinAlgError:
         raise RuntimeError("Impossible de résoudre le système linéaire. La matrice est peut-être singulière.")
 
-    # Construction de la solution complète (avec les conditions aux limites)
+    #On construit la soluce complete
     x = np.linspace(0, 1, N + 1)
     U = np.zeros(N + 1)
     U[0] = U0
     U[1:-1] = U_interieur
     U[-1] = U1
-
-    # Traçage du graphe si demandé
     if tracer_graphe:
         plt.figure(figsize=(10, 6))
         plt.plot(x, U, 'b-', linewidth=2)
