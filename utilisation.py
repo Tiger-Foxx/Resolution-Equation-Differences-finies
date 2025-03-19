@@ -1,3 +1,5 @@
+#utilisation.py
+
 import numpy as np
 import matplotlib.pyplot as plt
 from main import resoudre_equation_diff
